@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensaje de Amor con Palabras que Caen Continuamente</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Contenedor principal */
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            color: #ff4d75;
+            margin-bottom: 25px;
+            font-size: 2rem;
+        }
+
+        /* Input y botón */
+        #nombreInput {
+            width: 80%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ff4d75;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            outline: none;
+        }
+
+        #enviarBtn {
+            background: #ff4d75;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #enviarBtn:hover {
+            background: #ff1a57;
+        }
+
+        /* Mensaje principal */
+        #mensajeAmor {
+            margin-top: 30px;
+            display: none;
+            font-size: 1.3rem;
+            line-height: 2.5;
+            color: #c2185b;
+        }
+
+        .corazon {
+            color: #ff1a57;
+            font-size: 1.5rem;
+            animation: latir 1.5s infinite;
+        }
+
+        @keyframes latir {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.2); }
+            60% { transform: scale(1); }
+        }
+
+        /* Palabras que caen */
+        .palabra-caida {
+            position: absolute;
+            top: -50px;
+            color: #c2185b;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+            z-index: 5;
+            animation: caer linear forwards;
+        }
+
+        @keyframes caer {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Adaptación a móviles pequeños */
+        @media (max-width: 400px) {
+            h1 { font-size: 1.5rem; }
+            #nombreInput, #enviarBtn { font-size: 1rem; }
+            #mensajeAmor { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="corazon">❤️</span>Ingresa tu nombre <span class="corazon">❤️</span></h1>
+        <input type="text" id="nombreInput" placeholder="Escribe tu nombre aquí...">
+        <button id="enviarBtn">Ingresar</button>
+        <div id="mensajeAmor"></div>
+    </div>
+
+    <script>
+        const listaMensajes = [
+            "Te Quiero {nombre}",
+            "Te Adoro {nombre}",
+            "Te Amo {nombre}",
+            "Te Aprecio",
+            "Te Prefiero",
+            "Eres Perfecta",
+            "Eres Única",
+            "Una en un Millón"
+        ];
+        
+        let intervaloPalabras;
+        let nombreGuardado = "";
+
+        // Función para crear una sola palabra que caiga
+        function crearUnaPalabraCaida() {
+            const palabra = document.createElement('div');
+            palabra.classList.add('palabra-caida');
+            
+            // Reemplazar nombre en el mensaje
+            const mensajeAleatorio = listaMensajes[Math.floor(Math.random() * listaMensajes.length)];
+            palabra.textContent = mensajeAleatorio.replace("{nombre}", nombreGuardado);
+            
+            // Configuración para evitar enredos
+            //vw ancho de pantalla
+            palabra.style.left = `${Math.random() * 100}vw`;
+            palabra.style.fontSize = `${Math.random() * 10 + 14}px`;
+            palabra.style.animationDuration = `${Math.random() * 5 + 8}s`; // Duración uniforme mayor
+            
+            document.body.appendChild(palabra);
+            
+            // Eliminar la palabra después de que termine la animación
+            setTimeout(() => {
+                palabra.remove();
+            }, parseFloat(palabra.style.animationDuration) * 1000);
+        }
+
+        // Función para iniciar la caída continua
+        function iniciarCaidaContinua() {
+            // Detener intervalo anterior si existe
+            if (intervaloPalabras) clearInterval(intervaloPalabras);
+            
+            // Crear una palabra cada 0.3 segundos para distribución equitativa
+            intervaloPalabras = setInterval(crearUnaPalabraCaida, 300);
+            
+            // Crear algunas palabras iniciales de golpe
+            for (let i = 0; i < 5; i++) {
+                setTimeout(crearUnaPalabraCaida, i * 200);
+            }
+        }
+
+        // Acción al hacer clic
+        document.getElementById('enviarBtn').addEventListener('click', () => {
+            const nombre = document.getElementById('nombreInput').value.trim();
+            if (nombre) {
+                nombreGuardado = nombre;
+                
+                // Mostrar mensaje principal
+                const mensaje = `
+                    <p>💗</p>
+                `;
+                document.getElementById('mensajeAmor').innerHTML = mensaje;
+                document.getElementById('mensajeAmor').style.display = 'block';
+                
+                // Iniciar caída continua
+                iniciarCaidaContinua();
+            } else {
+                alert('Ingresa tu nombre');
+            }
+        });
+
+        // Activar con tecla Enter
+        document.getElementById('nombreInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('enviarBtn').click();
+            }
+        });
+    </script>
+</body>
+</html>
